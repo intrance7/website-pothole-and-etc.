@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CivicWatch India - Report City Issues</title>
+  
+  <!-- Load Inter font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  
+  <style>
+    /* Reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body, html {
+      margin: 0; padding: 0;
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      background: #f5f7fa;
+      color: #222831;
+      overflow-x: hidden;
+    }
+
+    /* Background overlay container */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('pothole1.jpg') center center / cover no-repeat;
+      opacity: 0.08;
+      filter: blur(4px);
+      z-index: -2;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background:
+        url('pothole2.jpg') center center / contain no-repeat;
+      opacity: 0.05;
+      filter: blur(5px);
+      z-index: -1;
+    }
+
+    /* Layout with two columns */
+    .main-wrapper {
+      display: flex;
+      min-height: 100vh;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+      gap: 30px;
+      box-sizing: border-box;
+    }
+
+    /* Left content: form, reports, stats */
+    .content-left {
+      flex: 0 0 70%;
+      display: flex;
+      flex-direction: column;
+      gap: 50px;
+    }
+
+    /* Right panel */
+    .sidebar {
+      flex: 0 0 30%;
+      background: rgba(255 255 255 / 0.95);
+      box-shadow: 0 8px 24px rgba(99, 99, 99, 0.15);
+      border-radius: 14px;
+      padding: 30px 28px;
+      font-size: 1.05rem;
+      color: #333;
+      overflow-y: auto;
+      max-height: calc(100vh - 80px);
+      line-height: 1.6;
+      user-select: none;
+    }
+    .sidebar h2 {
+      margin-top: 0;
+      color: #2f80ed;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin-bottom: 20px;
+    }
+    .sidebar p {
+      margin-bottom: 1.4rem;
+    }
+    .sidebar p strong {
+      color: #222831;
+    }
+
+    /* Headings */
+    h1, h2 {
+      margin-bottom: 0.25em;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      user-select: none;
+    }
+    h1 {
+      font-size: 3rem;
+      color: #30475e;
+      text-align: center;
+      margin-bottom: 0.2em;
+    }
+    h2 {
+      font-size: 2rem;
+      color: #222831;
+    }
+
+    /* Paragraph under main heading */
+    p.intro-text {
+      max-width: 700px;
+      text-align: center;
+      font-size: 1.15rem;
+      line-height: 1.5;
+      margin: 0 auto 40px;
+      color: #4a4e69;
+      user-select: none;
+    }
+
+    /* Container */
+    .container {
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(99, 99, 99, 0.2);
+      width: 100%;
+      padding: 36px 48px;
+    }
+
+    /* Form Styles */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: #222831;
+      user-select: none;
+    }
+
+    input[type="text"],
+    select,
+    textarea {
+      padding: 14px 16px;
+      border-radius: 10px;
+      border: 1.8px solid #adb5bd;
+      font-size: 1rem;
+      font-weight: 400;
+      background: #f9f9f9;
+      color: #222831;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.07);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      font-family: 'Inter', sans-serif;
+      resize: vertical;
+    }
+    input[type="text"]::placeholder,
+    textarea::placeholder {
+      color: #adb5bd;
+    }
+
+    input[type="text"]:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #2f80ed;
+      box-shadow: 0 0 6px rgba(47, 128, 237, 0.4);
+      background: #fff;
+      color: #222831;
+    }
+
+    select {
+      cursor: pointer;
+    }
+
+    input[type="file"] {
+      background: transparent;
+      color: #495057;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.25s ease;
+    }
+    input[type="file"]:hover {
+      color: #2f80ed;
+    }
+
+    /* Button */
+    button {
+      background: #2f80ed;
+      border: none;
+      color: white;
+      font-weight: 700;
+      font-size: 1.25rem;
+      padding: 16px 0;
+      border-radius: 28px;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(47, 128, 237, 0.5);
+      transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.25s ease;
+      width: 210px;
+      align-self: center;
+      user-select: none;
+    }
+    button:hover {
+      background: #1c5dd0;
+      box-shadow: 0 10px 28px rgba(28, 93, 208, 0.65);
+      transform: scale(1.05);
+    }
+    button:active {
+      transform: scale(0.98);
+      box-shadow: 0 4px 14px rgba(28, 93, 208, 0.6);
+    }
+
+    /* Media Preview */
+    .preview {
+      margin-top: 12px;
+      display: flex;
+      justify-content: center;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+      max-height: 240px;
+      background: #f1f3f5;
+    }
+    img, video {
+      max-width: 100%;
+      max-height: 240px;
+      object-fit: cover;
+      user-select: none;
+    }
+
+    /* Reports Section */
+    .reports {
+      width: 100%;
+    }
+    .report-item {
+      background: #f9f9f9;
+      border-radius: 14px;
+      padding: 20px 28px;
+      margin-bottom: 22px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: box-shadow 0.2s ease;
+      cursor: default;
+      user-select: none;
+      color: #222831;
+    }
+    .report-item:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+    .report-item strong {
+      font-weight: 700;
+      font-size: 1.12rem;
+      color: #2f80ed;
+    }
+    .report-item p {
+      margin: 12px 0 0;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    /* Statistics Table */
+    .stats {
+      width: 100%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      background: #fff;
+      user-select: none;
+    }
+
+    th, td {
+      padding: 16px 20px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1rem;
+      color: #3b3f51;
+      border-bottom: 1px solid #e3e6f3;
+    }
+
+    th {
+      background: #2f80ed;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      user-select: none;
+    }
+
+    td.city-name {
+      cursor: pointer;
+      color: #2f80ed;
+      font-weight: 700;
+      transition: background-color 0.25s ease, color 0.25s ease;
+      border-bottom: 1px solid #d1d5db;
+      user-select: text;
+      border-radius: 0;
+    }
+
+    td.city-name:hover {
+      background-color: #d0e2ff;
+      color: #1a53b0;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .main-wrapper {
+        flex-direction: column;
+        padding: 30px 20px 60px;
+      }
+      .content-left, .sidebar {
+        flex: 1 1 100%;
+        max-height: none;
+      }
+      .sidebar {
+        margin-top: 40px;
+        border-radius: 14px;
+      }
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>CivicWatch India</h1>
+  <p class="intro-text">Report potholes, road blockages, and sewer issues in your city to help the government take action quickly.</p>
+
+  <div class="main-wrapper">
+    <div class="content-left">
+
+      <!-- Report Form -->
+      <section class="container">
+        <h2>Report an Issue</h2>
+        <form id="reportForm">
+          <label for="issueType">Issue Type</label>
+          <select id="issueType" required>
+            <option value="">Select an issue</option>
+            <option value="Pothole">Pothole</option>
+            <option value="Road Blockage">Road Blockage</option>
+            <option value="Sewer Blockage">Sewer Blockage</option>
+          </select>
+
+          <label for="city">City</label>
+          <input list="cities" id="city" name="city" placeholder="Select or type city" required autocomplete="off" />
+          <datalist id="cities">
+            <option value="Delhi"></option>
+            <option value="Mumbai"></option>
+            <option value="Bengaluru"></option>
+            <option value="Chennai"></option>
+            <option value="Kolkata"></option>
+            <option value="Hyderabad"></option>
+            <option value="Pune"></option>
+            <option value="Ahmedabad"></option>
+            <option value="Jaipur"></option>
+            <option value="Lucknow"></option>
+          </datalist>
+
+          <label for="description">Description</label>
+          <textarea id="description" rows="4" placeholder="Describe the issue briefly..." required></textarea>
+
+          <label for="media">Upload Photo or Video (optional)</label>
+          <input type="file" id="media" accept="image/*,video/*" />
+
+          <div class="preview" id="preview"></div>
+
+          <button type="submit">Submit Report</button>
+        </form>
+      </section>
+
+      <!-- Reports Display -->
+      <section class="container reports" id="reportsSection">
+        <h2>Recent Reports</h2>
+        <!-- Reports will be dynamically added here -->
+      </section>
+
+      <!-- Statistics -->
+      <section class="container stats" id="statsSection">
+        <h2>Current Sewer Blockages in Big Cities (Sample Data)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>City</th>
+              <th>Number of Blockages</th>
+            </tr>
+          </thead>
+          <tbody id="statsTableBody">
+            <!-- Stats rows will be injected here -->
+          </tbody>
+        </table>
+      </section>
+
+    </div>
+
+    <!-- Right Sidebar Content -->
+    <aside class="sidebar">
+      <h2>Why Report?</h2>
+      <p><strong>Every complaint counts.</strong> When citizens report issues like potholes, road blockages, and sewer problems, local authorities get notified faster and can respond promptly.</p>
+      <p>Many problems are resolved quickly once the government is alerted. Our platform helps bridge the communication gap between residents and city officials.</p>
+      <p><strong>Your reports help improve city life.</strong> Together, we can create safer and cleaner roads for everyone.</p>
+      <p>Stay engaged, keep reporting, and watch your city improve!</p>
+    </aside>
+  </div>
+
+  <script>
+    const reportForm = document.getElementById('reportForm');
+    const reportsSection = document.getElementById('reportsSection');
+    const preview = document.getElementById('preview');
+    const cityInput = document.getElementById('city');
+    const statsTableBody = document.getElementById('statsTableBody');
+
+    // Sample statistics data
+    const statsData = [
+      { city: 'Delhi', blockages: 35 },
+      { city: 'Mumbai', blockages: 28 },
+      { city: 'Bengaluru', blockages: 22 },
+      { city: 'Chennai', blockages: 18 },
+      { city: 'Kolkata', blockages: 15 },
+      { city: 'Hyderabad', blockages: 12 },
+      { city: 'Pune', blockages: 9 },
+      { city: 'Ahmedabad', blockages: 7 },
+      { city: 'Jaipur', blockages: 5 },
+      { city: 'Lucknow', blockages: 4 }
+    ];
+
+    // Store reports in-memory for demo purposes
+    let reports = [];
+
+    // Render statistics table rows
+    function renderStats() {
+      statsTableBody.innerHTML = '';
+      statsData.forEach(stat => {
+        const tr = document.createElement('tr');
+        const cityTd = document.createElement('td');
+        cityTd.textContent = stat.city;
+        cityTd.classList.add('city-name');
+
+        // On hover, autofill city input field
+        cityTd.addEventListener('mouseenter', () => {
+          cityInput.value = stat.city;
+        });
+
+        cityTd.addEventListener('mouseleave', () => {
+          cityInput.value = '';
+        });
+
+        const blockagesTd = document.createElement('td');
+        blockagesTd.textContent = stat.blockages;
+
+        tr.appendChild(cityTd);
+        tr.appendChild(blockagesTd);
+        statsTableBody.appendChild(tr);
+      });
+    }
+
+    // Render reports list
+    function renderReports() {
+      const container = document.createElement('div');
+      container.innerHTML = '';
+      reportsSection.innerHTML = '<h2>Recent Reports</h2>';
+
+      if (reports.length === 0) {
+        const p = document.createElement('p');
+        p.textContent = 'No reports yet. Be the first to report an issue!';
+        p.style.color = '#777';
+        reportsSection.appendChild(p);
+        return;
+      }
+
+      reports.slice().reverse().forEach(report => {
+        const div = document.createElement('div');
+        div.className = 'report-item';
+
+        div.innerHTML = `
+          <strong>${report.type} reported in ${report.city}</strong>
+          <p>${report.description}</p>
+        `;
+
+        if (report.mediaUrl) {
+          if (report.mediaType === 'image') {
+            const img = document.createElement('img');
+            img.src = report.mediaUrl;
+            img.alt = 'User uploaded image';
+            img.style.maxWidth = '100%';
+            img.style.borderRadius = '12px';
+            img.style.marginTop = '12px';
+            div.appendChild(img);
+          } else if (report.mediaType === 'video') {
+            const video = document.createElement('video');
+            video.src = report.mediaUrl;
+            video.controls = true;
+            video.style.maxWidth = '100%';
+            video.style.borderRadius = '12px';
+            video.style.marginTop = '12px';
+            div.appendChild(video);
+          }
+        }
+        reportsSection.appendChild(div);
+      });
+    }
+
+    // Preview selected media
+    document.getElementById('media').addEventListener('change', (e) => {
+      preview.innerHTML = "";
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const fileType = file.type.split('/')[0];
+      const url = URL.createObjectURL(file);
+
+      if (fileType === 'image') {
+        const img = document.createElement('img');
+        img.src = url;
+        preview.appendChild(img);
+      } else if (fileType === 'video') {
+        const video = document.createElement('video');
+        video.src = url;
+        video.controls = true;
+        preview.appendChild(video);
+      }
+    });
+
+    // Form submission handler
+    reportForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const newReport = {
+        type: document.getElementById('issueType').value,
+        city: cityInput.value.trim(),
+        description: document.getElementById('description').value.trim(),
+        mediaUrl: '',
+        mediaType: '',
+      };
+
+      const mediaFile = document.getElementById('media').files[0];
+      if (mediaFile) {
+        newReport.mediaType = mediaFile.type.split('/')[0];
+        newReport.mediaUrl = URL.createObjectURL(mediaFile);
+      }
+
+      reports.push(newReport);
+      renderReports();
+      reportForm.reset();
+      preview.innerHTML = "";
+      cityInput.focus();
+    });
+
+    // Initial rendering
+    renderReports();
+    renderStats();
+  </script>
+
+</body>
+</html>
